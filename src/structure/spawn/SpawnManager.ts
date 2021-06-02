@@ -7,14 +7,14 @@ export class SpawnManager {
         if (spawn.memory.basicWorkersRequired > 0) {
             let creepName = "BasicWorker_" + spawn.name + "_" + spawn.memory.basicWorkersRequired
             if (spawn.spawnCreep([WORK, CARRY, MOVE], creepName, {
-                memory: this.createCreepMemory("basicWorker", spawn.id, creepName)
+                memory: this.createCreepMemory(CreepType.BasicWorker, spawn.id, creepName)
             }) === OK) {
                 spawn.memory.basicWorkersRequired--
             }
         }
     }
 
-    private static createCreepMemory(type: string, spawnId: Id<StructureSpawn>, name: string): CreepMemory {
+    private static createCreepMemory(type: CreepType, spawnId: Id<StructureSpawn>, name: string): CreepMemory {
         return {
             type: type,
             spawn: spawnId,

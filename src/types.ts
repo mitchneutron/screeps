@@ -1,4 +1,5 @@
-  export {};
+
+export {};
     /*
       Example types, expand on these or remove them and add your own.
       Note: Values, properties defined here do no fully *exist* by this type definiton alone.
@@ -17,7 +18,23 @@
       interface CreepMemory {
           name: string
           spawn: Id<StructureSpawn>
-          type: string
+          type: CreepType
+          target?: Id<any>
+          action?: CreepAction
+      }
+
+      enum CreepAction {
+          Harvest,
+          Build,
+          Upgrade,
+          Store,
+
+      }
+
+      enum CreepType {
+          BasicWorker,
+          AdvancedWorker,
+
       }
 
       interface SpawnMemory {

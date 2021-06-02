@@ -1,6 +1,6 @@
-
-import { ErrorMapper } from "utils/ErrorMapper";
-import { SpawnManager } from "./structure/spawn/SpawnManager"
+import {ErrorMapper} from "./utils/ErrorMapper";
+import {SpawnManager} from "./structure/spawn/SpawnManager"
+import {CreepActionManager} from "./creep/CreepActionManager";
 import {} from "./types"
 
 
@@ -12,16 +12,8 @@ export const loop = ErrorMapper.wrapLoop(() => {
         SpawnManager.run(Game.spawns[spawnsKey])
 
     for (let name in Game.creeps) {
-        var creep = Game.creeps[name];
-        if (creep.memory.role === 'harvester') {
-            roleHarvester.run(creep);
-        }
-        if (creep.memory.role === 'upgrader') {
-            roleUpgrader.run(creep);
-        }
-        if (creep.memory.role === 'builder') {
-            roleBuilder.run(creep);
-        }
+        let creep = Game.creeps[name];
+        CreepActionManager.performAction(creep)
     }
 
 
