@@ -23,8 +23,16 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-file-append')
     grunt.loadNpmTasks("grunt-jsbeautifier")
     grunt.loadNpmTasks("grunt-rsync")
+    grunt.loadNpmTasks('grunt-string-replace')
+    grunt.loadNpmTasks("grunt-ts")
 
     grunt.initConfig({
+
+        ts:{
+            default: {
+                tsconfig: './tsconfig.json'
+            }
+        },
 
         // Push all files in the dist folder to screeps. What is in the dist folder
         // and gets sent will depend on the tasks used.
@@ -58,6 +66,25 @@ module.exports = function (grunt) {
                         return dest + src.replace(/\//g,'_');
                     }
                 }],
+            }
+        },
+
+        'string-replace': {
+            dist: {
+                files:{
+                    'dist/': 'dist/**'
+                }
+            },
+            options: {
+                replacements: [
+                    {
+                        // pattern: /const/,
+                        pattern: /require\(.*\)/g,
+                        replacement: function(match, p1) {
+                            return match.replace(/(.)\//, "").replace(/src\//, "").replace(/\//g, "_")
+                        }
+                    }
+                ]
             }
         },
 
@@ -118,8 +145,9 @@ module.exports = function (grunt) {
     })
 
     // Combine the above into a default task
-    grunt.registerTask('default',  ['clean', 'copy:screeps',  'file_append:versioning', 'screeps']);
-    grunt.registerTask('private',  ['clean', 'copy:screeps',  'file_append:versioning', 'rsync:private']);
+    grunt.registerTask('default',  ['clean', 'ts', 'copy:screeps', 'string-replace:dist', 'file_append:versioning', 'screeps']);
+    grunt.registerTask('private',  ['clean', 'ts', 'copy:screeps', 'file_append:versioning', 'rsync:private']);
     grunt.registerTask('test',     ['jsbeautifier:verify']);
     grunt.registerTask('pretty',   ['jsbeautifier:modify']);
+    grunt.registerTask('build',    ['clean', 'ts', 'copy:screeps', 'string-replace:dist'])
 }
